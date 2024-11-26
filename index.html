@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contagem Regressiva</title>
-
-    <!-- Ícone do site (favicon) -->
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/833/833602.png" type="image/png">
+    <title>Contagem Regressiva para Férias</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/833/833643.png" type="image/png">
 
     <style>
         body {
@@ -31,10 +29,11 @@
         }
 
         #countdown {
-            font-size: 10rem; /* Tamanho bem grande */
+            font-size: 10rem;
             font-weight: bold;
             margin: 0;
-            color: #ffffff;
+            color: #dcdcdc;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
         }
 
         h1 {
@@ -43,79 +42,113 @@
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
         }
 
-        audio {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
+        #volume-control {
+            display: none; /* Escondido por padrão */
+            margin-top: 20px;
+        }
+
+        input[type="range"] {
+            width: 50%;
         }
     </style>
 </head>
 <body>
     <div>
-        <h1>Contagem Regressiva Férias</h1>
+        <h1>Contagem Regressiva para Férias</h1>
         <div id="countdown"></div>
+        <div id="volume-control">
+            <label for="volume">Volume: </label>
+            <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
+        </div>
     </div>
 
-    <!-- Player de música Lo-Fi -->
+    <!-- Primeira música (Easter Egg) -->
     <audio id="background-audio" loop>
-        <source src="rizzlas-c418-224649.mp3" type="audio/mpeg">
+        <source src="easter-egg.mp3" type="audio/mpeg">
         Seu navegador não suporta o elemento de áudio.
     </audio>
-    
-    <script>
-        const audio = document.getElementById('background-audio');
-        const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑ ↑ ↓ ↓ ← → ← → B A
-        let inputSequence = [];
-    
-        document.addEventListener('keydown', (event) => {
-            inputSequence.push(event.keyCode);
-    
-            // Verificar se o código digitado é igual ao Konami Code
-            if (inputSequence.length > konamiCode.length) {
-                inputSequence.shift(); // Remove o primeiro elemento para manter o tamanho
-            }
-    
-            if (JSON.stringify(inputSequence) === JSON.stringify(konamiCode)) {
-                // Easter Egg ativado!
-                audio.play().then(() => {
-                    console.log("Música tocando! Konami Code ativado.");
-                    alert("🎉 Você desbloqueou o Easter Egg! 🎵");
-                }).catch(error => {
-                    console.log("Erro ao reproduzir música:", error);
-                });
-    
-                inputSequence = []; // Reseta a sequência
-            }
-        });
-    </script>
-    
+
+    <!-- Segunda música (Final da contagem) -->
+    <audio id="end-audio">
+        <source src="musica-final.mp3" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
 
     <script>
-        // Data final: 29 de novembro de 2024 às 09h30
         const targetDate = new Date("2024-11-29T09:30:00");
+        const countdownElement = document.getElementById('countdown');
+        const backgroundAudio = document.getElementById('background-audio');
+        const endAudio = document.getElementById('end-audio');
+        const volumeControl = document.getElementById('volume-control');
+        const volumeSlider = document.getElementById('volume');
 
+        // Atualiza a contagem regressiva
         function updateCountdown() {
             const now = new Date();
             const timeDifference = targetDate - now;
 
             if (timeDifference <= 0) {
-                document.getElementById('countdown').innerHTML = "Tempo esgotado!";
+                // Final da contagem
                 clearInterval(interval);
+                countdownElement.innerHTML = "Férias!!!";
+                playEndMusic(); // Toca a música final
                 return;
             }
 
-            const totalHours = Math.floor(timeDifference / (1000 * 60 * 60)); // Horas totais
+            const totalHours = Math.floor(timeDifference / (1000 * 60 * 60));
             const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
             const seconds = Math.floor((timeDifference / 1000) % 60);
             const milliseconds = Math.floor(timeDifference % 1000);
 
-            document.getElementById('countdown').innerHTML =
+            countdownElement.innerHTML =
                 `${totalHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:` +
                 `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(3, '0')}`;
         }
 
-        // Atualize a contagem a cada 1 ms
         const interval = setInterval(updateCountdown, 1);
+
+        // Easter Egg (Konami Code)
+        const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+        let inputSequence = [];
+
+        document.addEventListener('keydown', (event) => {
+            inputSequence.push(event.keyCode);
+
+            // Mantém o tamanho máximo da sequência
+            if (inputSequence.length > konamiCode.length) {
+                inputSequence.shift();
+            }
+
+            // Verifica o Konami Code
+            if (JSON.stringify(inputSequence) === JSON.stringify(konamiCode)) {
+                // Easter Egg ativado!
+                backgroundAudio.play().then(() => {
+                    console.log("Música tocando! Konami Code ativado.");
+                    alert("🎉 Você desbloqueou o Easter Egg! 🎵");
+                    volumeControl.style.display = 'block'; // Mostra o controle de volume
+                }).catch(error => {
+                    console.log("Erro ao reproduzir música:", error);
+                });
+
+                inputSequence = []; // Reseta a sequência
+            }
+        });
+
+        // Controle de volume
+        volumeSlider.addEventListener('input', (event) => {
+            backgroundAudio.volume = event.target.value;
+            endAudio.volume = event.target.value;
+        });
+
+        // Função para tocar a música final
+        function playEndMusic() {
+            backgroundAudio.pause(); // Pausa a música de fundo
+            endAudio.play().then(() => {
+                console.log("Música final tocando!");
+            }).catch(error => {
+                console.log("Erro ao reproduzir a música final:", error);
+            });
+        }
     </script>
 </body>
 </html>
