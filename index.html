@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contagem Regressiva</title>
+
+    <!-- Ícone do site (favicon) -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/128/833/833602.png" type="image/png">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #1e3c72, #2a5298, #355c7d, #6c5b7b);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+            color: white;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #countdown {
+            font-size: 10rem; /* Tamanho bem grande */
+            font-weight: bold;
+            margin: 0;
+            color: #ffffff;
+        }
+
+        h1 {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        audio {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Contagem Regressiva Férias</h1>
+        <div id="countdown"></div>
+    </div>
+
+    <!-- Player de música Lo-Fi -->
+    <audio id="background-audio" loop>
+        <source src="rizzlas-c418-224649.mp3" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+    
+    <script>
+        const audio = document.getElementById('background-audio');
+        const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑ ↑ ↓ ↓ ← → ← → B A
+        let inputSequence = [];
+    
+        document.addEventListener('keydown', (event) => {
+            inputSequence.push(event.keyCode);
+    
+            // Verificar se o código digitado é igual ao Konami Code
+            if (inputSequence.length > konamiCode.length) {
+                inputSequence.shift(); // Remove o primeiro elemento para manter o tamanho
+            }
+    
+            if (JSON.stringify(inputSequence) === JSON.stringify(konamiCode)) {
+                // Easter Egg ativado!
+                audio.play().then(() => {
+                    console.log("Música tocando! Konami Code ativado.");
+                    alert("🎉 Você desbloqueou o Easter Egg! 🎵");
+                }).catch(error => {
+                    console.log("Erro ao reproduzir música:", error);
+                });
+    
+                inputSequence = []; // Reseta a sequência
+            }
+        });
+    </script>
+    
+
+    <script>
+        // Data final: 29 de novembro de 2024 às 09h30
+        const targetDate = new Date("2024-11-29T09:30:00");
+
+        function updateCountdown() {
+            const now = new Date();
+            const timeDifference = targetDate - now;
+
+            if (timeDifference <= 0) {
+                document.getElementById('countdown').innerHTML = "Tempo esgotado!";
+                clearInterval(interval);
+                return;
+            }
+
+            const totalHours = Math.floor(timeDifference / (1000 * 60 * 60)); // Horas totais
+            const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+            const seconds = Math.floor((timeDifference / 1000) % 60);
+            const milliseconds = Math.floor(timeDifference % 1000);
+
+            document.getElementById('countdown').innerHTML =
+                `${totalHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:` +
+                `${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(3, '0')}`;
+        }
+
+        // Atualize a contagem a cada 1 ms
+        const interval = setInterval(updateCountdown, 1);
+    </script>
+</body>
+</html>
