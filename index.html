@@ -20,6 +20,7 @@
             animation: gradientBG 15s ease infinite;
             overflow: hidden;
             color: white;
+            flex-direction: column; /* Coloca tudo em coluna */
         }
 
         @keyframes gradientBG {
@@ -29,7 +30,7 @@
         }
 
         #countdown {
-            font-size: 10rem;
+            font-size: 8rem;
             font-weight: bold;
             margin: 0;
             color: #dcdcdc;
@@ -37,7 +38,7 @@
         }
 
         h1 {
-            font-size: 6rem;
+            font-size: 4rem;
             margin-bottom: 20px;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
         }
@@ -48,7 +49,37 @@
         }
 
         input[type="range"] {
-            width: 50%;
+            width: 80%; /* Ajusta para ocupar mais espaço em telas menores */
+        }
+
+        /* Estilos para telas menores (até 768px de largura) */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem; /* Reduz o tamanho do título */
+            }
+
+            #countdown {
+                font-size: 6rem; /* Reduz o tamanho da contagem */
+            }
+
+            input[type="range"] {
+                width: 90%; /* Aumenta o espaço do controle de volume */
+            }
+        }
+
+        /* Estilos para telas muito pequenas (até 480px de largura) */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem; /* Título menor ainda */
+            }
+
+            #countdown {
+                font-size: 4rem; /* Ajusta a contagem para caber em telas pequenas */
+            }
+
+            input[type="range"] {
+                width: 100%; /* Controle de volume ocupa todo o espaço disponível */
+            }
         }
     </style>
 </head>
